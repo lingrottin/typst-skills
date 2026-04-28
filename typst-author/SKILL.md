@@ -77,19 +77,6 @@ This is a paragraph in Typst.
 4. **Apply formatting with `typstyle -i <file>`** only when the formatter changes are limited to a newly created file or to code you created or edited in the current task.
 5. **Stop and ask the user when formatting would change untouched pre-existing code**. If the diff reaches outside your own edits, or if you cannot confidently prove that every formatter change is limited to your edits, ask instead of formatting.
 
-## Using `replace_all` safely
-
-When using `edit` with `replace_all: true`, the replacement affects EVERY match in the file, including pre-existing user code (problem statements, templates, etc.).
-
-**BEFORE running `replace_all`**:
-1. Use `grep_search` first to list ALL matches.
-2. Visually inspect the list. If ANY match occurs in user-written problem statements or template code that should NOT be changed, do NOT use `replace_all`.
-3. Instead, use targeted per-line `edit` calls or rewrite the specific sections.
-
-**Examples of `replace_all` DANGER**:
-- Replacing `cov` with `"cov"` will also change `cov(X,Y)` in problem statements where the user wrote it correctly.
-- Replacing `cap` with `inter` will also change `caption` or `capability` if those appear.
-
 ## Quick syntax reference
 
 ### Critical distinctions
@@ -154,10 +141,10 @@ The content in this section only covers a small part. For full reference on conv
 | `\:` | `quad` | medium space |
 | `\;` | `quad` | medium space (same as above) |
 | `\quad` | `quad` | semicolons DOES NOT work |
-| `\qquad` | `quad quad` | semicolons DOES NOT work |
+| `\qquad` | `wide` | semicolons DOES NOT work |
 | `\!` | none needed | Typst has auto-kerning |
 
-NOTE: semicolons DOES NOT work. Use multiple `quad`s or `#h` function instead. `quad` is equal to `#h(1em)`. Note that `#h` is a function call, so please follow the hash sign rules below.
+NOTE: semicolons DOES NOT work. Use `quad`, `wide`, or `#h` function instead. `quad` is equal to `#h(1em)`. Note that `#h` is a function call, so please follow the hash sign rules.
 
 ### Operators
 
@@ -190,18 +177,18 @@ Note: contents inside `upright(...)` are parsed as math expressions, therefore y
 
 | LaTeX | Typst |
 |-------|-------|
-| `\cap` | `inter` | DO NOT use `cap` |
-| `\cup` | `union` | DO NOT use `cup` |
-| `\subset` | `subset` |  |
-| `\supset` | `supset` |  |
-| `\overline{A}` | `overline(A)` |  |
-| `\emptyset` | `emptyset` |  |
+| `\cap` | `inter` |
+| `\cup` | `union` |
+| `\subset` | `subset` |
+| `\supset` | `supset` |
+| `\overline{A}` | `overline(A)` |
+| `\emptyset` | `emptyset` |
 
 ### Greek letters
 
-Most Greek letters are the same (`alpha`, `beta`, `sigma`, `pi`, `mu`, etc.). Example: `\pi` in LaTeX becomes `pi` in Typst.
-Also, most variant Greek letters are the same as `letter.alt` in Typst. Example: `\varpi` becomes `pi.alt`.
-But note the following letters, whose "standard" and "variant" versions are inverted in Typst:
+Greek letters are the same in Typst (`alpha`, `beta`, `sigma`, `pi`, `mu`, etc.), and simply removing backslashes will work. Example: `\pi` in LaTeX becomes `pi` in Typst.
+Also, most "variant" (`var-`) Greek letters are the same as `letter.alt` in Typst. Example: `\varpi` becomes `pi.alt`.
+However, note the following letters, whose "standard" and "variant" versions are inverted in Typst:
 
 | LaTeX | Typst |
 |-------|-------|
@@ -210,11 +197,13 @@ But note the following letters, whose "standard" and "variant" versions are inve
 | `\phi` | `phi.alt` |
 | `\varphi` | `phi` |
 
-### Dots
+### Ellipsis
+
+"Dots" is the ellipsis when you want to omit things. Note that Typst does not apply the correct form of dots smartly, so please use a specific variant.
 
 | LaTeX | Typst |
 |-------|-------|
-| `\dots` or `\ldots` | `dots` or `...` (Note that Typst does not apply the correct form of dots smartly. Use a specific variant instead) |
+| `\dots` or `\ldots` | `dots` or `...`|
 | `\cdots` | `dots.c` |
 | `\vdots` | `dots.v` |
 | `\adots` | `dots.up` |
@@ -250,9 +239,9 @@ $
 
 This skill bundles a script at [scripts/index.js](scripts/index.js) that converts LaTeX formulas into Typst format.
 
-**Usage**: `node scripts/index.js <LaTeX formulas>`
-**Example**: `node scripts/index.js "\\frac{a}{b}"` makes an output of `a/b`.
-**Note**: Dependency might be installed first: `pnpm install -C "path/to/scripts/"`.
+- **Usage**: `node scripts/index.js <LaTeX formulas>`
+- **Example**: `node scripts/index.js "e \\overset{\\text{def}}{=} \\lim_{{n \\to \\infty}} \left(1 + \\frac{1}{n}\\right)^n"` makes an output of `e eq.def lim_(n -> infinity) (1 + 1/n)^n`. (Complicated LaTeX formulas is also OK!)
+- **Note**: Dependency might be installed first: `pnpm install -C "path/to/scripts/"`.
 
 Call this script when you know the LaTeX name of a symbol, but not the Typst version.
 
@@ -315,20 +304,20 @@ To be, or not to be, that is the question.
 // DO NOT:
 To be,or not to be,that is the question.
 
-// If you're writing Chinese document about Mathematics, Science, and Engineering (they often come with equations and formulas), please use English punctuation ONLY. If the article does NOT contain equations and formulas, please use Chinese full-width punctuations.
+// If you're writing Chinese document about Mathematics, Science, and Engineering (they often come with equations and formulas), please use English punctuation ONLY. If the article does NOT contain equations and formulas, please use Chinese full-width punctuation.
 // DO:
 记 $x=g(y)$. 因为 $g$ 是 $f$ 的反函数, 所以 $f(g(y))=y$. // This is mathematics so use English punctuation here.
 莎士比亚最脍炙人口的句子，应该就是《哈姆雷特》中的那一句：“生存还是毁灭，这是个值得思考的问题。” // This does not contain equations and formulas so use Chinese punctuation here.
 
-// If you're writing Chinese documents, please ALWAYS put spaces between Chinese characters, and other characters. (i.e. English words, math blocks, and numbers)
+// If you're writing Chinese documents, please ALWAYS put spaces between Chinese characters and other characters. (i.e. English words, math blocks, and numbers)
 // DO:
-我们一致认为 Python 在这个场景中不适用, 因为我们只找到一个 $O(n^2)$ 的已有实现, 这太慢了.
+说实话我觉得在目前这个 AI 主导的环境下使用 Typst 简直是个灾难，因为没有多少 AI 专门为它训练过。
 我觉得小明的身高不可能是 10m, 没有任何一个正常人能长到那个高度.
 // DO NOT:
 我现在一听到“AIGC内容”就尴尬。这里的C本身就是内容的意思了，为什么还要在后面加个“内容”？ // There should be spaces between "AIGC" and "内容", and between "C" and "这里的"/"本身".
 ```
 
-<!-- Agent 请忽略此段注释：通常来说，不建议在专业渲染系统中（如 msword）为中英文间加入空格。因为一般来说手动加上的空格会比规范的 0.25em 宽。但 Typst 中，加不加在结果上都是 0.25em。所以最好加上，因为这样让源文件更好阅读。 -->
+<!-- Agent 请忽略此段注释：通常来说，不建议在专业渲染系统中（如 msword）为中英文间加入空格。因为手动加上的空格有可能会比规范的 0.25em 宽。但 Typst 中，加和不加都会产生规范的 0.25em 间隔，所以可以加上。 -->
 
 ## Common mistakes to avoid
 
@@ -338,21 +327,11 @@ To be,or not to be,that is the question.
 - Using `[]` for arrays (use `()` instead).
 - Accessing array elements with `arr[0]` (use `arr.at(0)`).
 - Omitting `#` in markup/content blocks (e.g., `text(...)[numbering(...)]` should be `text(...)[#numbering(...)]`).
-- Using `#` inside code contexts (e.g., `figure(#image("x.png"))` in an argument list).
+- Using `#` inside code contexts (e.g., `figure(#image("x.png"))` in an argument list; hash is not needed here).
 - Mixing up content blocks `[]` with code blocks `{}`.
 - Forgetting to include the namespace when accessing imported variables/functions (e.g., use `color.hsl` instead of just `hsl`).
 - Using LaTeX syntax (do **NOT** use `\begin{...}`, `\section`, or other LaTeX commands).
 - Hallucinating environments (e.g., `tabular` does not exist; use `table`).
-
-### LaTeX-to-Typst migration mistakes
-
-- Using `\cap` or `\cup` in math mode. Use `inter` and `union` instead.
-- Using `\infty` in math mode. Use `oo` or `infinity` instead.
-- Using `\cdot` in math mode. Use `dot` instead.
-- Using `\times` in math mode. Use `times` instead. (Note: `times` in Typst is just a symbol, use `A times B` directly.)
-- Using `\text{...}` in math mode. Use `"..."` instead.
-- Using `\quad`, `\;`, `\,` for spacing in math mode. Use `quad` for medium space, `#h(0.33em)`(this is a function call; please follow the rules above) for thin space, or just rely on Typst's auto-spacing.
-- Concatenating variable names without spaces in math mode (writing `XY` instead of `X Y`).
 
 ## Troubleshooting
 
