@@ -1,0 +1,22 @@
+lockfileVersion: '9.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+importers:
+
+  .:
+    dependencies:
+      tex2typst:
+        specifier: ^0.6.0
+        version: 0.6.0
+
+packages:
+
+  tex2typst@0.6.0:
+    resolution: {integrity: sha512-ZPok9Lf62LLKJHbyL7Ji5ZYpfRqGS0Qu9ku8bToMoTV8tbkOl+7G3lhgeooTv0kH5qlheTTvuVClXKq/NGnDwQ==}
+
+snapshots:
+
+  tex2typst@0.6.0: {}
