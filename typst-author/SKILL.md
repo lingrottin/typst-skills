@@ -49,6 +49,7 @@ This is a paragraph in Typst.
 - **Scripting & runtime behavior**: `docs/reference/scripting.md`
 - **Page setup & tables**: `docs/guides/page-setup.md` and `docs/guides/tables.md`
 - **Task-oriented authoring help**: `docs/tutorial/writing-in-typst.md`, `docs/guides/*.md`, and `docs/reference/**/*.md`
+- **LaTeX-to-Typst cheatsheet**: `docs/cheatsheet.md`
 
 ## Detailed instructions
 
@@ -143,7 +144,7 @@ NOTE: If the function accepts MORE THAN ONE content blocks, the brackets should 
 
 Math mode in Typst uses different symbol names than LaTeX. Always verify symbol names in local docs before use.
 
-The content in this section only covers a small part. For full reference on conversion from LaTeX to Typst, please check the [cheatsheet](docs/cheatsheet.md) or read the included Typst docs.
+The content in this section only covers a small part. For full reference on conversion from LaTeX to Typst, please check the [cheatsheet](docs/cheatsheet.md) or read the included Typst docs. DO NOT READ ADDITIONAL FILES UNLESS NEEDED.
 
 ### Spacing in math mode
 
@@ -154,9 +155,9 @@ The content in this section only covers a small part. For full reference on conv
 | `\;` | `quad` | medium space (same as above) |
 | `\quad` | `quad` | semicolons DOES NOT work |
 | `\qquad` | `quad quad` | semicolons DOES NOT work |
-| `\!` | none needed | Typst auto-kerning |
+| `\!` | none needed | Typst has auto-kerning |
 
-NOTE: semicolons DOES NOT work. Use multiple `quad`s or `#h` function instead. `quad` is equal to `#h(1em)`.
+NOTE: semicolons DOES NOT work. Use multiple `quad`s or `#h` function instead. `quad` is equal to `#h(1em)`. Note that `#h` is a function call, so please follow the hash sign rules below.
 
 ### Operators
 
@@ -203,6 +204,7 @@ Also, most variant Greek letters are the same as `letter.alt` in Typst. Example:
 But note the following letters, whose "standard" and "variant" versions are inverted in Typst:
 
 | LaTeX | Typst |
+|-------|-------|
 | `\epsilon` | `epsilon.alt` |
 | `\varepsilon` | `epsilon` |
 | `\phi` | `phi.alt` |
@@ -212,7 +214,7 @@ But note the following letters, whose "standard" and "variant" versions are inve
 
 | LaTeX | Typst |
 |-------|-------|
-| `\dots` or `\ldots` | `dots` or `...` (Note that Typst does not apply the correct form of dots smartly. Use the specific variable instead) |
+| `\dots` or `\ldots` | `dots` or `...` (Note that Typst does not apply the correct form of dots smartly. Use a specific variant instead) |
 | `\cdots` | `dots.c` |
 | `\vdots` | `dots.v` |
 | `\adots` | `dots.up` |
@@ -236,11 +238,23 @@ Example:
 ```typst
 // LaTeX: f(x) = \begin{cases} x^2 & x > 0 \\ 0 & x \le 0 \end{cases}
 // Typst:
+$
 f(x) = cases(
   x^2\, &x > 0,
   0\, &x <= 0,
 )
+$
 ```
+
+### Helper from TeX to Typst
+
+This skill bundles a script at [scripts/index.js](scripts/index.js) that converts LaTeX formulas into Typst format.
+
+**Usage**: `node scripts/index.js <LaTeX formulas>`
+**Example**: `node scripts/index.js "\\frac{a}{b}"` makes an output of `a/b`.
+**Note**: Dependency might be installed first: `pnpm install -C "path/to/scripts/"`.
+
+Call this script when you know the LaTeX name of a symbol, but not the Typst version.
 
 ## Math mode variable spacing rule (CRITICAL)
 
@@ -293,17 +307,17 @@ Given $5x=10$. Find the value of $x$.
 Billy is 1.7m tall.
 // DO NOT:
 Given $5x=10$. Find the value of x.
-Billy is $1.7$ $m$ tall.
+Billy is $1.7$ $m$ tall. // 1.7 is a specific number, and m is a unit.
 
 // Always add spaces after punctuation.
 // DO:
-To be or not to be, that is the question.
+To be, or not to be, that is the question.
 // DO NOT:
-To be or not to be,that is the question.
+To be,or not to be,that is the question.
 
 // If you're writing Chinese document about Mathematics, Science, and Engineering (they often come with equations and formulas), please use English punctuation ONLY. If the article does NOT contain equations and formulas, please use Chinese full-width punctuations.
 // DO:
-记 $x=g(y)$. 因为 $g$ 是 $f$ 的反函数, 有 $f(g(y))=y$. // This is Mathematics so use English punctuation here.
+记 $x=g(y)$. 因为 $g$ 是 $f$ 的反函数, 所以 $f(g(y))=y$. // This is mathematics so use English punctuation here.
 莎士比亚最脍炙人口的句子，应该就是《哈姆雷特》中的那一句：“生存还是毁灭，这是个值得思考的问题。” // This does not contain equations and formulas so use Chinese punctuation here.
 
 // If you're writing Chinese documents, please ALWAYS put spaces between Chinese characters, and other characters. (i.e. English words, math blocks, and numbers)
@@ -311,8 +325,10 @@ To be or not to be,that is the question.
 我们一致认为 Python 在这个场景中不适用, 因为我们只找到一个 $O(n^2)$ 的已有实现, 这太慢了.
 我觉得小明的身高不可能是 10m, 没有任何一个正常人能长到那个高度.
 // DO NOT:
-我现在一听到“AIGC内容”就尴尬。这里的C本身就是内容的意思了，为什么还要在后面加个“内容”？
+我现在一听到“AIGC内容”就尴尬。这里的C本身就是内容的意思了，为什么还要在后面加个“内容”？ // There should be spaces between "AIGC" and "内容", and between "C" and "这里的"/"本身".
 ```
+
+<!-- Agent 请忽略此段注释：通常来说，不建议在专业渲染系统中（如 msword）为中英文间加入空格。因为一般来说手动加上的空格会比规范的 0.25em 宽。但 Typst 中，加不加在结果上都是 0.25em。所以最好加上，因为这样让源文件更好阅读。 -->
 
 ## Common mistakes to avoid
 
@@ -338,7 +354,7 @@ To be or not to be,that is the question.
 - Using `\quad`, `\;`, `\,` for spacing in math mode. Use `quad` for medium space, `#h(0.33em)`(this is a function call; please follow the rules above) for thin space, or just rely on Typst's auto-spacing.
 - Concatenating variable names without spaces in math mode (writing `XY` instead of `X Y`).
 
-## Compilation errors: diagnosis and fixes
+## Troubleshooting
 
 ### "unknown variable" errors
 
@@ -348,26 +364,6 @@ If compilation fails with a "unknown variable" error, the most likely cause is t
 2. If the script doesn't cover it, Check the cheatsheet at [docs/cheatsheet.md](docs/cheatsheet.md)
 3. If those didn't work, search the local math docs: `docs/reference/math/`
 4. Only as a last resort, try a probe or iterate.
-
-### Other common errors
-
-- **"expected content, found ..."**: You're using code where markup is expected - wrap in `#{ }` or use proper syntax.
-- **"expected expression, found ..."**: Missing `#` (or `#(...)`) in markup/content blocks.
-- **"failed to load file (access denied)"**: The file is outside the project root. Use `--root` to set the project root appropriately.
-- **"package not found"**: Verify exact package name and version on Typst Universe. Check for typos in `@preview/package:version` syntax.
-- **"unknown font family"**: Remove font specification to use system defaults (warnings don't prevent compilation).
-
-## Helper from TeX to Typst
-
-This skill bundles a script at [scripts/index.js](scripts/index.js) that converts LaTeX formulas into Typst format.
-
-**Usage**: `node scripts/index.js <LaTeX formulas>`
-**Example**: `node scripts/index.js "\\frac{a}{b}"` makes an output of `a/b`.
-**Note**: Dependency might be installed first: `pnpm install -C "path/to/scripts/"`.
-
-Call this script when you know the LaTeX name of a symbol, but not the Typst version.
-
-## Troubleshooting
 
 ### Missing font warnings
 
