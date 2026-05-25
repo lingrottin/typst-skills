@@ -1,0 +1,23 @@
+{
+  "skill_name": "typst-author",
+  "evals": [
+    {
+      "id": 0,
+      "prompt": "我有个 typst 编译错误，帮我修到能编译。下面这段在 typst compile 时提示 expected expression / missing # 之类的错误，你要最小改动修复（不要改其他内容/风格）：\n\n```typst\n#let mk() = [\n  text(fill: red)[(numbering(\"1.\"))]\n]\n\n= Demo\n#mk()\n```\n\n请给出修复后的完整代码片段，并解释为什么必须加 #（以及应该加在什么位置）。",
+      "expected_output": "应识别 markup/content 内需要用 # 引入表达式；修复后能编译；解释清楚 # 的作用与放置位置。",
+      "files": []
+    },
+    {
+      "id": 1,
+      "prompt": "我只会 LaTeX，不会 Typst 数学。把这个式子转成 Typst 数学（尽量 idiomatic），并说明你是否用到脚本 scripts/index.js（如果用到，写出你会运行的命令和你预期的输出形态）：\n\n\\\\[ e \\overset{\\text{def}}{=} \\lim_{n \\to \\infty} \\left(1 + \\frac{1}{n}\\right)^n \\\\]",
+      "expected_output": "给出 Typst 数学写法（例如使用 eq.def / lim_(...) / -> / oo 等），并给出可复现的脚本调用命令（若需要）。",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "我在 Typst 数学里遇到 unknown variable 错误。下面这段报错说 XY 不是已知变量。请解释原因并修复为我想表达的 X*Y（注意：不要把 XY 变成字符串）：\n\n```typst\n$ E(XY) $\n```\n\n请给出修复后的代码，并补充一个你认为最常见的同类坑例子。",
+      "expected_output": "应指出 math mode 连续字母会被当作一个标识符；修复为 E(X Y)；并给出一个同类坑的例子。",
+      "files": []
+    }
+  ]
+}
